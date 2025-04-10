@@ -3,7 +3,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/xgiulvvxb92yxliy?svg=true)](https://ci.appveyor.com/project/OlikPr/ahj-env)
 
-deployment: https://evgeniypryanichnikov.github.io/ahj-events/
+deployment: https://olikpr.github.io/ahj-events/
 
 ![](./src/img/GracefulMiniatureBustard-small.gif)
 
