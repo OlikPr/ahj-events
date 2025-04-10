@@ -1,0 +1,20 @@
+:root {
+  --cell-size: 120px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #000;
+  font-size: 16px;
+  text-align: center;
+}
+
+#game-container {
+  display: grid;
+  gap: 20px;
+}
