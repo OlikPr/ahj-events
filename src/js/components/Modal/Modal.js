@@ -70,12 +70,16 @@ export default class Modal {
   }
 
   hide() {
+    if (this.hiding) return;
     this.hiding = true;
     this.elemModal.classList.remove('modal__show');
     this.elemModal.classList.add('modal__hiding');
     setTimeout(() => {
       this.elemModal.classList.remove('modal__hiding');
       this.hiding = false;
+      if (this.onCloseCallback) {
+        this.onCloseCallback();
+      }
     }, this.animationSpeed);
     document.dispatchEvent(this.eventHideModal);
   }
@@ -85,7 +89,11 @@ export default class Modal {
       this.hide();
     }
   }
-
+  
+  setOnClose(callback) {
+    this.onCloseCallback = callback;
+  }
+  
   destroy() {
     if (this.elemModal.parentElement) {
       this.elemModal.parentElement.removeChild(this.elemModal);

@@ -13,7 +13,13 @@ export default class GamePlay {
     this.cellEnterListeners = [];
     this.cellLeaveListeners = [];
     this.isModal = false;
-
+    this.currentModal = null;
+    this.missCount = 0;
+    this.maxMisses = 5;
+    this.goblinTimeout = null;
+    this.currentGoblinIndex = null;
+    this.gameActive = false;
+    this.score = 0;
     this.initModalListener();
   }
 
@@ -63,6 +69,69 @@ export default class GamePlay {
 
     this.cells = Array.from(this.boardEl.children);
   }
+  showGoblin() {
+    if (!this.gameActive) return null;
+    this.clearBoard();
+    const randomIndex = Math.floor(Math.random() * this.boardSize ** 2);
+    this.currentGoblinIndex = randomIndex;
+    const goblinEl = document.createElement('div');
+    goblinEl.classList.add('goblin');
+    this.cells[randomIndex].appendChild(goblinEl);
+    this.goblinTimeout = setTimeout(() => {
+      this.handleGoblinMiss();
+    }, 1000);
+    return randomIndex;
+  }
+  handleGoblinMiss() {
+    if (!this.gameActive) return;
+
+    this.missCount++;
+    this.clearBoard();
+    this.currentGoblinIndex = null;
+
+    if (this.missCount >= this.maxMisses) {
+      this.endGame(false);
+    } else {
+      const delay = 500 + Math.random() * 1500;
+      setTimeout(() => this.showGoblin(), delay);
+    }
+  }
+
+  handleGoblinClick(index) {
+    if (index === this.currentGoblinIndex && this.gameActive) {
+      clearTimeout(this.goblinTimeout);
+      this.score++;
+      this.clearBoard();
+      this.currentGoblinIndex = null;
+
+      const delay = 500 + Math.random() * 1500;
+      setTimeout(() => this.showGoblin(), delay);
+    }
+  }
+
+  startGame() {
+    this.gameActive = true;
+    this.score = 0;
+    this.missCount = 0;
+    this.showGoblin();
+  }
+
+  endGame(isWin) {
+    this.gameActive = false;
+    clearTimeout(this.goblinTimeout);
+    this.clearBoard();
+
+    if (isWin) {
+      this.showModalMessage('Победа!', `Ваш счет: ${this.score}`);
+    } else {
+      this.showModalMessage('Игра окончена', `Вы пропустили 5 гоблинов. Счет: ${this.score}`);
+    }
+  }
+
+  clearBoard() {
+    const goblins = this.boardEl.querySelectorAll('.goblin');
+    goblins.forEach(goblin => goblin.remove());
+  }
 
   redrawPositions(position) {
     for (const cell of this.cells) {
@@ -102,6 +171,9 @@ export default class GamePlay {
 
   onCellClick(event) {
     const index = this.cells.indexOf(event.currentTarget);
+    if (this.gameActive) {
+      this.handleGoblinClick(index);
+    }
     this.cellClickListeners.forEach((o) => o.call(null, index));
   }
 
