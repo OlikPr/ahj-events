@@ -8,9 +8,9 @@ install:
   - npm install  # команда установки зависимостей
 build: off  
 build_script:
-  - npm run build   # команда сборки
+  - npm run build   
   
-deploy_script:  #
+deploy_script:  
   - git config --global credential.helper store
   - git config --global user.name OlikPr
   - git config --global user.email prikhodkolik15@gmail.com
